@@ -153,3 +153,165 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', resize);
   requestAnimationFrame(step);
 })();
+// ===== Globo terráqueo ligero (contacto) con tooltips =====
+(() => {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('globe-canvas');
+  if (!canvas || prefersReduced) {
+    const fb = canvas?.nextElementSibling; if (fb) fb.style.display = 'grid';
+    return;
+  }
+
+  const wrap = canvas.parentElement; // .contact-visual
+  // Tooltip DOM
+  const tip = document.createElement('div');
+  tip.className = 'globe-tooltip';
+  tip.style.display = 'none';
+  wrap.appendChild(tip);
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  let w=0, h=0, r=0, cx=0, cy=0, t=0;
+  let running = false;
+
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    w = Math.floor(rect.width * DPR);
+    h = Math.floor(rect.height * DPR);
+    canvas.width = w; canvas.height = h;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    cx = (w/DPR) * 0.5;
+    cy = (h/DPR) * 0.52;
+    r  = Math.min(w/DPR, h/DPR) * 0.35;
+  }
+
+  // Puntos con etiqueta
+  const points = [
+    {lat: 40.4,  lon: -3.7,   label: 'Madrid (EU)'},
+    {lat: 48.86, lon:  2.35,  label: 'París'},
+    {lat: 51.5,  lon: -0.12,  label: 'Londres'},
+    {lat: 37.77, lon: -122.4, label: 'San Francisco (US)'},
+    {lat: -34.6, lon: -58.4,  label: 'Buenos Aires (LatAm)'},
+  ];
+
+  function proj(lat, lon, rot){ // devuelve coords en píxeles CSS
+    const φ = lat * Math.PI/180;
+    const λ = lon * Math.PI/180 + rot;
+    const x = Math.cos(φ) * Math.cos(λ);
+    const y = Math.sin(φ);
+    const z = Math.cos(φ) * Math.sin(λ);
+    if (z < -0.1) return null; // oculta cara trasera
+    const k = r;
+    return { x: cx + x * k, y: cy - y * k, z };
+  }
+
+  function lineMeridian(rot, λ0, color, alpha){
+    ctx.beginPath();
+    for (let φ=-80; φ<=80; φ+=4){
+      const p = proj(φ, λ0, rot);
+      if (!p) continue;
+      if (φ === -80) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = color; ctx.globalAlpha = alpha; ctx.stroke(); ctx.globalAlpha = 1;
+  }
+  function lineParallel(rot, φ0, color, alpha){
+    ctx.beginPath();
+    for (let λ=-180; λ<=180; λ+=4){
+      const p = proj(φ0, λ, rot);
+      if (!p) continue;
+      if (λ === -180) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = color; ctx.globalAlpha = alpha; ctx.stroke(); ctx.globalAlpha = 1;
+  }
+
+  // cache de posiciones para hit-test del tooltip
+  let screenPts = [];
+
+  function step(){
+    if (!running) return;
+    t += 0.016;
+    const rot = t * 0.35;
+
+    ctx.clearRect(0,0,w,h);
+
+    // halo y esfera
+    const g = ctx.createRadialGradient(cx, cy, r*0.7, cx, cy, r*1.25);
+    g.addColorStop(0, 'rgba(124,247,209,0.08)');
+    g.addColorStop(1, 'rgba(255,59,47,0.06)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r*1.25, 0, Math.PI*2); ctx.fill();
+
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    const g2 = ctx.createRadialGradient(cx - r*0.3, cy - r*0.3, r*0.2, cx, cy, r);
+    g2.addColorStop(0, '#0f141d'); g2.addColorStop(1, '#0a0f16');
+    ctx.fillStyle = g2; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(124,247,209,0.12)'; ctx.stroke();
+
+    // wireframe
+    ctx.lineWidth = 1;
+    for (let λ=-180; λ<=180; λ+=20) lineMeridian(rot, λ, 'rgba(124,247,209,0.25)', 0.35);
+    for (let φ=-60; φ<=60; φ+=20)   lineParallel(rot, φ, 'rgba(124,247,209,0.25)', 0.35);
+
+    // puntos y posiciones en pantalla
+    screenPts = [];
+    for (const pt of points){
+      const p = proj(pt.lat, pt.lon, rot);
+      if (!p) continue;
+      const pulse = 0.5 + 0.5 * Math.sin((t*2) + (pt.lat+pt.lon));
+      const rr = 2 + pulse*1.2;
+
+      // glow
+      ctx.beginPath(); ctx.arc(p.x, p.y, rr+3, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,59,47,0.25)'; ctx.fill();
+      // núcleo
+      ctx.beginPath(); ctx.arc(p.x, p.y, rr, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(124,247,209,0.95)'; ctx.fill();
+
+      screenPts.push({ x:p.x, y:p.y, r: rr+6, label: pt.label });
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  // ------- Tooltips (hit test en CSS px) -------
+  function showTip(x, y, text){
+    tip.textContent = text;
+    tip.style.display = 'block';
+    tip.style.left = `${x}px`;
+    tip.style.top  = `${y}px`;
+    tip.classList.add('is-visible');
+  }
+  function hideTip(){
+    tip.classList.remove('is-visible');
+    tip.style.display = 'none';
+  }
+
+  wrap.addEventListener('pointermove', (e)=>{
+    const rect = wrap.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    let found = null, minD = 1e9;
+    for (const p of screenPts){
+      const dx = mx - p.x, dy = my - p.y;
+      const d2 = dx*dx + dy*dy;
+      if (d2 < (p.r*p.r) && d2 < minD){ minD = d2; found = p; }
+    }
+    if (found) showTip(found.x, found.y, found.label);
+    else hideTip();
+  });
+  wrap.addEventListener('pointerleave', hideTip);
+
+  // ------- Lifecycle -------
+  resize();
+  window.addEventListener('resize', resize);
+
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver(([e])=>{
+      if (e.isIntersecting){ running = true; requestAnimationFrame(step); }
+      else { running = false; hideTip(); }
+    }, {threshold:0.1});
+    io.observe(wrap);
+  } else {
+    running = true; requestAnimationFrame(step);
+  }
+})();

@@ -14,7 +14,7 @@ function active($p){ global $path; return $path === $p ? ' is-active' : ''; }
   <a class="<?= active('/servicios.php') ?>" href="/servicios.php">Servicios</a>
   <a class="<?= active('/proyectos.php') ?>" href="/proyectos.php">Proyectos</a>
   <a class="<?= active('/nosotros.php')  ?>" href="/nosotros.php">Nosotros</a>
-  <a class="btn btn-primary<?= active('/contacto.php') ?>" href="/contacto.php">Contacto</a>
+  <a class="nav-cta<?= active('/contacto.php') ?>" href="/contacto.php">Contacto</a>
 </nav>
   </div>
 </header>

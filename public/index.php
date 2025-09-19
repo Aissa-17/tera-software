@@ -11,6 +11,7 @@ ob_start();
 include __DIR__ . '/../includes/bloques/portada.php';
 include __DIR__ . '/../includes/bloques/tecnologias.php';
 include __DIR__ . '/../includes/bloques/razones.php';
+include __DIR__.'/../includes/bloques/faq.php';
 
 $content = ob_get_clean();
 include __DIR__ . '/../includes/layout.php';

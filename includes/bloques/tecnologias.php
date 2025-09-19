@@ -5,37 +5,32 @@
 
   <div class="marquee reveal reveal-zoom">
     <ul class="marquee__track">
-      <li>React</li>
-      <li>Next.js</li>
-      <li>Node.js</li>
-      <li>TypeScript</li>
-      <li>PHP</li>
-      <li>WordPress</li>
-      <li>WooCommerce</li>
-      <li>MySQL</li>
-      <li>PostgreSQL</li>
-      <li>Docker</li>
-      <li>Nginx</li>
-      <li>AWS</li>
-      <li>Cloudflare</li>
-      <li>Vite</li>
-      <li>Tailwind</li>
-      <!-- Duplicadas para bucle continuo -->
-      <li>React</li>
-      <li>Next.js</li>
-      <li>Node.js</li>
-      <li>TypeScript</li>
-      <li>PHP</li>
-      <li>WordPress</li>
-      <li>WooCommerce</li>
-      <li>MySQL</li>
-      <li>PostgreSQL</li>
-      <li>Docker</li>
-      <li>Nginx</li>
-      <li>AWS</li>
-      <li>Cloudflare</li>
-      <li>Vite</li>
-      <li>Tailwind</li>
+      <?php
+      $tech = [
+        ['react',       'React'],
+        ['nextjs',      'Next.js'],
+        ['nodejs',      'Node.js'],
+        ['typescript',  'TypeScript'],
+        ['php',         'PHP'],
+        ['wordpress',   'WordPress'],
+        ['woocommerce', 'WooCommerce'],
+        ['mysql',       'MySQL'],
+        ['postgresql',  'PostgreSQL'],
+        ['docker',      'Docker'],
+        ['nginx',       'Nginx'],
+        ['aws',         'AWS'],
+        ['cloudflare',  'Cloudflare'],
+        ['vite',        'Vite'],
+        ['tailwind',    'Tailwind'],
+      ];
+      // Pintamos 2 veces para que la animación sea continua
+      for ($k=0; $k<2; $k++):
+        foreach ($tech as [$slug, $label]): ?>
+          <li class="chip-tech has-mask" style="--icon:url('/assets/img/tech/<?= $slug ?>.svg')">
+            <span class="ic-mask" aria-hidden="true"></span>
+            <span><?= htmlspecialchars($label) ?></span>
+          </li>
+      <?php endforeach; endfor; ?>
     </ul>
   </div>
 </section>
