@@ -332,3 +332,104 @@ button[type="submit"]{width:max-content}
   z-index:2;
 }
 .globe-tooltip.is-visible{ opacity:1; }
+/* ===== Language dropdown ===== */
+.lang-dropdown { position: relative; margin-left: .75rem; }
+.lang-btn{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.45rem .6rem; border:1px solid rgba(255,255,255,.12);
+  border-radius:.6rem; background:transparent; color:inherit; cursor:pointer;
+}
+.lang-btn .flag { display:inline-flex; }
+.lang-btn .chev { opacity:.7; }
+.lang-menu{
+  position:absolute; right:0; top:calc(100% + .4rem);
+  min-width: 170px; padding:.4rem; margin:0; list-style:none;
+  background: rgba(20,22,26,.98); backdrop-filter: blur(8px);
+  border:1px solid rgba(255,255,255,.12); border-radius:.6rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  display:none; z-index: 20;
+}
+.lang-menu li a{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.5rem .6rem; border-radius:.45rem; text-decoration:none; color:inherit;
+}
+.lang-menu li a:hover{ background: rgba(255,255,255,.06); }
+.lang-dropdown.open .lang-menu{ display:block; }
+
+/* Pequeños ajustes responsive */
+@media (max-width: 800px){
+  .lang-btn{ padding:.4rem .5rem; }
+}
+/* ===== Dropdown contraste ===== */
+.contrast-dropdown { position: relative; margin-left:.75rem; }
+.contrast-btn{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.45rem .6rem; border:1px solid rgba(255,255,255,.12);
+  border-radius:.6rem; background:transparent; color:inherit; cursor:pointer;
+}
+.contrast-btn .chev{ opacity:.7; }
+.contrast-menu{
+  position:absolute; right:0; top:calc(100% + .4rem);
+  min-width: 190px; padding:.4rem; margin:0; list-style:none;
+  background: rgba(20,22,26,.98); backdrop-filter: blur(8px);
+  border:1px solid rgba(255,255,255,.12); border-radius:.6rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  display:none; z-index:22;
+}
+.contrast-menu li a{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.5rem .6rem; border-radius:.45rem; text-decoration:none; color:inherit;
+}
+.contrast-menu li a[aria-selected="true"]{ background:rgba(255,255,255,.08); }
+.contrast-menu li a:hover{ background: rgba(255,255,255,.12); }
+.contrast-dropdown.open .contrast-menu{ display:block; }
+
+/* ===== Modos de contraste ===== */
+/* Estándar: no añadimos clase -> styles por defecto */
+
+/* Alto contraste: eleva contraste sin romper la paleta */
+body.contrast-high{
+  background-color:#0a0a0a;
+  color:#fff;
+}
+body.contrast-high .card,
+body.contrast-high .section,
+body.contrast-high .hero-right,
+body.contrast-high .reason-cards .card{
+  background: #0e1014 !important;
+  border: 1px solid rgba(255,255,255,.28) !important;
+}
+body.contrast-high a{ color:#78e0ff; text-decoration: underline; text-underline-offset: 2px; }
+body.contrast-high .btn,
+body.contrast-high .nav-cta{
+  color:#000 !important; background:#ff6b6b !important; border-color:#ff6b6b !important;
+}
+body.contrast-high .btn-ghost{ border-color:#fff !important; color:#fff !important; }
+body.contrast-high :focus-visible{
+  outline:3px solid #00e5ff; outline-offset:3px;
+}
+
+/* Contraste máximo: fondo negro y texto casi blanco, contornos marcados */
+body.contrast-max{
+  background:#000 !important; color:#fff !important;
+}
+body.contrast-max *{ border-color:#fff !important; }
+body.contrast-max .card,
+body.contrast-max .section{ background:#000 !important; border:2px solid #fff !important; }
+body.contrast-max a{ color:#0ff !important; text-decoration: underline; text-underline-offset: 3px; }
+body.contrast-max .btn,
+body.contrast-max .nav-cta{
+  background:#fff !important; color:#000 !important; border:2px solid #fff !important;
+}
+body.contrast-max .btn-ghost{ background:transparent !important; color:#fff !important; border:2px solid #fff !important; }
+body.contrast-max :focus-visible{
+  outline:4px solid #0ff; outline-offset:4px;
+}
+
+/* Respeto de alto contraste del sistema (Windows/Edge) */
+@media (forced-colors: active) {
+  .contrast-btn, .lang-btn { border: 1px solid ButtonText; }
+}
+
+/* Opcional: icono “A” */
+.ci{ background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); border-radius:.35rem; }

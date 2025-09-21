@@ -315,3 +315,67 @@ document.addEventListener('DOMContentLoaded', () => {
     running = true; requestAnimationFrame(step);
   }
 })();
+document.addEventListener('DOMContentLoaded', () => {
+  // Toggle dropdown idioma
+  const dd = document.querySelector('.lang-dropdown');
+  if (dd) {
+    const btn = dd.querySelector('.lang-btn');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dd.classList.toggle('open');
+      btn.setAttribute('aria-expanded', dd.classList.contains('open') ? 'true' : 'false');
+    });
+    document.addEventListener('click', () => dd.classList.remove('open'));
+    dd.querySelectorAll('.lang-menu a').forEach(a => {
+      a.addEventListener('click', () => dd.classList.remove('open')); // navegación se hace por href ?lang=xx
+    });
+  }
+});
+// === Dropdown contraste ===
+const cdd = document.querySelector('.contrast-dropdown');
+if (cdd) {
+  const btn = cdd.querySelector('.contrast-btn');
+  const menu = cdd.querySelector('.contrast-menu');
+  const setContrast = (level) => {
+    document.body.classList.remove('contrast-high','contrast-max');
+    if (level === 'high') document.body.classList.add('contrast-high');
+    if (level === 'max')  document.body.classList.add('contrast-max');
+    // marcar selección visual
+    menu.querySelectorAll('[data-contrast]').forEach(a=>{
+      a.setAttribute('aria-selected', a.dataset.contrast === level ? 'true' : 'false');
+    });
+    // persistir
+    localStorage.setItem('contrast', level);
+    // actualizar etiqueta del botón
+    const label = cdd.querySelector('.contrast-label');
+    if (label) {
+      label.textContent = (level === 'high') ? (window.__t?.('contrast.high') || 'High contrast')
+                        : (level === 'max')  ? (window.__t?.('contrast.max')  || 'Max contrast')
+                        : (window.__t?.('contrast.normal') || 'Standard');
+    }
+  };
+
+  // preferencia del usuario/sistema
+  let initial = localStorage.getItem('contrast');
+  if (!initial && window.matchMedia) {
+    // si el sistema pide más contraste, arrancamos en "high"
+    const mq = window.matchMedia('(prefers-contrast: more)');
+    if (mq.matches) initial = 'high';
+  }
+  setContrast(initial || 'normal');
+
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    cdd.classList.toggle('open');
+    btn.setAttribute('aria-expanded', cdd.classList.contains('open') ? 'true' : 'false');
+  });
+  document.addEventListener('click', ()=> cdd.classList.remove('open'));
+
+  menu.querySelectorAll('a[data-contrast]').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      e.preventDefault();
+      setContrast(a.dataset.contrast);
+      cdd.classList.remove('open');
+    });
+  });
+}
