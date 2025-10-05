@@ -10,6 +10,7 @@ ob_start();
 // Bloques (se pueden reordenar o comentar)
 include __DIR__ . '/../includes/bloques/portada.php';
 include __DIR__ . '/../includes/bloques/tecnologias.php';
+include __DIR__ . '/../includes/bloques/industrias.php';
 include __DIR__ . '/../includes/bloques/razones.php';
 include __DIR__.'/../includes/bloques/faq.php';
 
