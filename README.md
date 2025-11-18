@@ -21,6 +21,9 @@ Tecnologías utilizadas:
   Sistema básico de internacionalización propio
   Estructura MVC ligera sin controladores pesados
 
+<img width="1917" height="923" alt="image" src="https://github.com/user-attachments/assets/1c8c433d-3337-400b-990f-51435eb979c6" />
+<img width="1643" height="912" alt="image" src="https://github.com/user-attachments/assets/73379409-5fe2-435e-a064-36d8857dbf00" />
+
 - Funcionamiento general
 Bloques
   Cada sección del sitio (servicios, equipo, razones, proyectos, etc.) está separada en includes/bloques/.
