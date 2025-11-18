@@ -4,67 +4,6 @@ Este repositorio contiene la web corporativa de Tera Software, desarrollada en P
 
 El objetivo del proyecto es servir como base sólida para una web de agencia tecnológica moderna, con una estructura clara y fácilmente ampliable hacia funcionalidades más avanzadas.
 
-Estructura del proyecto
-tera-software/
-├── .htaccess
-├── composer.json
-├── composer.lock
-├── README.md
-│
-├── config/
-│   └── env.php                # Configuración del entorno
-│
-├── forms/
-│   └── contact.php            # Lógica del formulario de contacto
-│
-├── i18n/                      # Archivos de traducción e internacionalización
-│
-├── includes/
-│   ├── header.php             # Cabecera HTML y navegación
-│   ├── footer.php             # Pie de página
-│   ├── layout.php             # Plantilla base para páginas
-│   ├── i18n.php               # Cargador de idiomas y helpers
-│   └── bloques/               # Secciones reutilizables
-│       ├── contacto-cta.php
-│       ├── equipo.php
-│       ├── faq.php
-│       ├── herramientas.php
-│       ├── industrias.php
-│       ├── metodo.php
-│       ├── nosotros-hero.php
-│       ├── nosotros-historia.php
-│       ├── nosotros-mision.php
-│       ├── portada.php
-│       ├── proyectos.php
-│       ├── razones.php
-│       ├── servicios.php
-│       ├── tecnologias.php
-│       ├── testimonios.php
-│       └── valores.php
-│
-├── public/
-│   ├── index.php              # Página principal
-│   ├── contacto.php
-│   ├── legal.php
-│   ├── nosotros.php
-│   ├── privacidad.php
-│   ├── proyectos.php
-│   ├── servicios.php
-│   │
-│   ├── forms/                 # Formularios expuestos en el frontal
-│   │
-│   └── assets/
-│       ├── css/
-│       │   └── main.css
-│       ├── js/
-│       │   └── main.js
-│       └── img/
-│           ├── brand/         # Identidad visual
-│           ├── tech/          # Iconos del stack tecnológico
-│           └── ui/            # Imágenes de interfaz y recursos gráficos
-│
-└── vendor/                    # Dependencias instaladas con Composer
-
 Filosofía del proyecto
   El sitio está construido sin frameworks pesados, únicamente con PHP y una estructura clara. La idea es mantener:
   Separación estricta entre vista, bloques y configuración.
